@@ -88,7 +88,20 @@ def go(config: DictConfig):
             ##################
             # Implement here #
             ##################
-            pass
+                   if "data_split" in active_steps:
+            _ = mlflow.run(
+                f"{config['main']['components_repository']}/train_val_test_split",
+                "main",
+                parameters={
+                    "input_artifact": "clean_sample.csv:latest",  # Using the cleaned data
+                    "output_artifact_trainval": "trainval_data.csv",
+                    "output_artifact_test": "test_data.csv",
+                    "test_size": config["modeling"]["test_size"],
+                    "random_seed": config["modeling"]["random_seed"],
+                    "stratify_by": config["modeling"]["stratify_by"],
+                },
+            )
+
 
         if "train_random_forest" in active_steps:
 
@@ -104,7 +117,17 @@ def go(config: DictConfig):
             # Implement here #
             ##################
 
-            pass
+            # Run the training step
+            _ = mlflow.run(
+                os.path.join(hydra.utils.get_original_cwd(), "src", "train_random_forest"),
+                entry_point="main",
+                parameters={
+                    "trainval_data": "trainval_data.csv:latest",  # Input artifact
+                    "random_forest_config": rf_config,  # Random forest config
+                    "output_artifact": "random_forest_export",  # Output model artifact name
+                },
+            )
+
 
         if "test_regression_model" in active_steps:
 
