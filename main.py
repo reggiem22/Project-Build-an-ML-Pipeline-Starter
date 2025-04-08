@@ -145,7 +145,15 @@ def go(config: DictConfig):
             # Implement here #
             ##################
 
-            pass
+            _ = mlflow.run(
+                os.path.join(hydra.utils.get_original_cwd(), "src", "test_model"),
+                    "main",
+                    parameters={
+                    "mlflow_model": "random_forest_export:prod",  # The model artifact
+                    "test_dataset": "test_data.csv:latest",  # The test dataset artifact
+             },
+        )
+
 
 
 if __name__ == "__main__":
