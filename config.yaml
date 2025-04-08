@@ -36,3 +36,7 @@ modeling:
     max_features: 0.5
     # DO not change the following
     oob_score: true
+
+  #Hyperparamaters
+    R² : 0.5543 
+    MAE: 33.94 
