@@ -115,29 +115,29 @@ def go(config: DictConfig):
             ##################
 
             # Run the training step
-            def main(config: DictConfig):
+            #def main(config: DictConfig):
     
-                # Define the path for the random forest configuration file
-                rf_config_path = os.path.abspath("rf_config.json")
-                
-                # Serialize the random forest configuration into the JSON file
-                with open(rf_config_path, "w+") as fp:
-                    json.dump(dict(config["modeling"]["random_forest"].items()), fp)
+            # Define the path for the random forest configuration file
+            rf_config_path = os.path.abspath("rf_config.json")
+            
+            # Serialize the random forest configuration into the JSON file
+            with open(rf_config_path, "w+") as fp:
+                json.dump(dict(config["modeling"]["random_forest"].items()), fp)
 
-                # Run the training step using mlflow with the correct parameters
-                _ = mlflow.run(
-                    os.path.join(hydra.utils.get_original_cwd(), "src", "train_random_forest"),
-                    "main",
-                    parameters={
-                        "trainval_artifact": "trainval_data.csv:latest",  # The training and validation data artifact
-                        "val_size": config["modeling"]["val_size"],  # Validation size from the config.yaml
-                        "random_seed": config["modeling"]["random_seed"],  # Random seed from the config.yaml
-                        "stratify_by": config["modeling"]["stratify_by"],  # Stratification column from config.yaml
-                        "rf_config": rf_config_path,  # Path to the saved random forest config JSON
-                        "output_artifact": "random_forest_export",  # Output artifact name
-                        "max_tfidf_features": config["modeling"]["max_tfidf_features"],  # Max features for TFIDF
-                    },
-                )
+            # Run the training step using mlflow with the correct parameters
+            _ = mlflow.run(
+                os.path.join(hydra.utils.get_original_cwd(), "src", "train_random_forest"),
+                "main",
+                parameters={
+                    "trainval_artifact": "trainval_data.csv:latest",  # The training and validation data artifact
+                    "val_size": config["modeling"]["val_size"],  # Validation size from the config.yaml
+                    "random_seed": config["modeling"]["random_seed"],  # Random seed from the config.yaml
+                    "stratify_by": config["modeling"]["stratify_by"],  # Stratification column from config.yaml
+                    "rf_config": rf_config_path,  # Path to the saved random forest config JSON
+                    "output_artifact": "random_forest_export",  # Output artifact name
+                    "max_tfidf_features": config["modeling"]["max_tfidf_features"],  # Max features for TFIDF
+                },
+            )
 
 
         if "test_regression_model" in active_steps:
@@ -145,14 +145,15 @@ def go(config: DictConfig):
             # Implement here #
             ##################
 
-            _ = mlflow.run(
-                os.path.join(hydra.utils.get_original_cwd(), "src", "test_model"),
+           _ = mlflow.run(
+                os.path.join(hydra.utils.get_original_cwd(), "components", "test_regression_model"),  # Ensure this path is correct
                     "main",
                     parameters={
-                    "mlflow_model": "random_forest_export:prod",  # The model artifact
-                    "test_dataset": "test_data.csv:latest",  # The test dataset artifact
-             },
-        )
+                    "mlflow_model": "random_forest_export:prod",  # The model artifact to use
+                    "test_dataset": "test_data.csv:latest",  # The test artifact to use
+                 },
+            )
+
 
 
 
