@@ -89,16 +89,14 @@ def go(config: DictConfig):
             # Implement here #
             ##################
            _ = mlflow.run(
-                f"{config['main']['components_repository']}/train_val_test_split",
-                "main",
-                parameters={
-                    "input_artifact": "clean_sample.csv:latest",  # Using the cleaned data
-                    "output_artifact_trainval": "trainval_data.csv",
-                    "output_artifact_test": "test_data.csv",
-                    "test_size": config["modeling"]["test_size"],
-                    "random_seed": config["modeling"]["random_seed"],
-                    "stratify_by": config["modeling"]["stratify_by"],
-                },
+            f"{config['main']['components_repository']}/train_val_test_split",
+                    'main',
+                    parameters={
+                "input": "clean_sample.csv:latest",
+                "test_size": config['modeling']['test_size'],
+                 "random_seed": config['modeling']['random_seed'],
+                "stratify_by": config['modeling']['stratify_by']
+                 }
             )
 
 
